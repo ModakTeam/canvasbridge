@@ -11,7 +11,7 @@ export async function getCourseList(): Promise<Course[]> {
     }
 
     try {
-        const response = await fetch("https://canvas.knu.ac.kr/api/v1/courses", {
+        const response = await fetch("https://canvas.knu.ac.kr/api/v1/courses?per_page=100", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -24,8 +24,10 @@ export async function getCourseList(): Promise<Course[]> {
         }
         
         let data: any = await response.json();
-        
-        return data.map((course: any) => new Course(course.name || "empty", course.id || 0, course.calendar, vscode.TreeItemCollapsibleState.None));
+
+        return data
+            .filter((course: any) => typeof course?.name === "string" && course.name.trim() !== "")
+            .map((course: any) => new Course(course.name, course.id || 0, course.calendar, vscode.TreeItemCollapsibleState.None));
     } catch (error: any) {
         vscode.window.showErrorMessage("LMS 연결 실패: " + error.message);
         return [];

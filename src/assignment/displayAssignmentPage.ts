@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { Assignment, AssignmentsProvider } from '../assignments';
+import { Assignment } from './assignment';
 
 export async function displayAssignmentPage(assignment: Assignment) {
     const panel = vscode.window.createWebviewPanel(

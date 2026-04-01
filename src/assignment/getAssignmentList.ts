@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
-import { Course } from "../courses";
+import { Assignment } from "./assignment";
 
-export async function getCourseList(): Promise<Course[]> {
+export async function getAssignmentList(courseId: number): Promise<Assignment[]> {
     let config = vscode.workspace.getConfiguration('knu');
     let token: any = config.get<string>('token') || "";
 
@@ -11,7 +11,7 @@ export async function getCourseList(): Promise<Course[]> {
     }
 
     try {
-        const response = await fetch("https://canvas.knu.ac.kr/api/v1/courses?per_page=100", {
+        const response = await fetch(`https://canvas.knu.ac.kr/api/v1/courses/${courseId}/assignments`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -24,10 +24,8 @@ export async function getCourseList(): Promise<Course[]> {
         }
         
         let data: any = await response.json();
-
-        return data
-            .filter((course: any) => typeof course?.name === "string" && course.name.trim() !== "")
-            .map((course: any) => new Course(course.name, course.id || 0, course.calendar, vscode.TreeItemCollapsibleState.None));
+        
+        return data.map((assignment: any) => new Assignment(assignment.name || "empty", assignment.id || 0, assignment.description, vscode.TreeItemCollapsibleState.None));
     } catch (error: any) {
         vscode.window.showErrorMessage("LMS 연결 실패: " + error.message);
         return [];

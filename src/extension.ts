@@ -1,9 +1,9 @@
 import * as vscode from 'vscode';
-import { Course, CoursesProvider } from "./courses";
-import { Assignment, AssignmentsProvider } from "./assignments";
-import { getCourseList } from './commands/getCourseList';
-import { getAssignmentList } from './commands/getAssignmentList';
-import { displayAssignmentPage } from './commands/displayAssignmentPage';
+import { Course, CoursesProvider } from "./course/course";
+import { Assignment, AssignmentsProvider } from "./assignment/assignment";
+import { getCourseList } from './course/getCourseList';
+import { getAssignmentList } from './assignment/getAssignmentList';
+import { displayAssignmentPage } from './assignment/displayAssignmentPage';
 
 export async function activate(context: vscode.ExtensionContext) {
 	let config = vscode.workspace.getConfiguration('knu');
@@ -17,7 +17,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	});
 
 	const assignmentsProvider = new AssignmentsProvider([]);
-	vscode.window.createTreeView('assignment', {	// Todo: detail -> assignment로 변경(package.json도 변경)
+	vscode.window.createTreeView('assignment', {
 		treeDataProvider: assignmentsProvider
 	});
 

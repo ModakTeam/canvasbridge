@@ -31,11 +31,11 @@ export class Assignment extends vscode.TreeItem {
         public readonly label: string,
         public readonly id_: number,
         public readonly html: string,
-        public readonly collapsibleState: vscode.TreeItemCollapsibleState,
-        public readonly dueAt?: string,
-        public readonly pointsPossible?: number,
-        public readonly submissionTypes?: string[],
-        public readonly published?: boolean
+        public readonly dueAt: string,
+        public readonly pointsPossible: number,
+        public readonly submissionTypes: string[],
+        public readonly published: boolean,
+        public readonly collapsibleState: vscode.TreeItemCollapsibleState
     ) {
         super(label, collapsibleState);
         this.tooltip = this.buildTooltip();

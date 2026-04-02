@@ -29,11 +29,11 @@ export async function getAssignmentList(courseId: number): Promise<Assignment[]>
             assignment.name || "empty",
             assignment.id || 0,
             assignment.description || "",
-            vscode.TreeItemCollapsibleState.None,
-            assignment.due_at,
-            assignment.points_possible,
-            assignment.submission_types,
-            assignment.published
+            assignment.due_at || "",
+            assignment.points_possible || 0,
+            assignment.submission_types || [],
+            assignment.published || false,
+            vscode.TreeItemCollapsibleState.None
         ));
     } catch (error: any) {
         vscode.window.showErrorMessage("LMS 연결 실패: " + error.message);

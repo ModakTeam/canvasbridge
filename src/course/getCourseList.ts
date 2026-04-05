@@ -11,7 +11,7 @@ export async function getCourseList(): Promise<Course[]> {
     }
 
     try {
-        const response = await fetch("https://canvas.knu.ac.kr/api/v1/courses?per_page=100", {
+        const response = await fetch("https://canvas.knu.ac.kr/api/v1/courses?enrollment_state=active", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

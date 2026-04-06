@@ -29,7 +29,7 @@ export class CoursesProvider implements vscode.TreeDataProvider<Course> {
 export class Course extends vscode.TreeItem {
     constructor(
         public readonly label: string,
-        public readonly id_: number,
+        public readonly courseId: number,
         public readonly calendar: string,
         public readonly collapsibleState: vscode.TreeItemCollapsibleState
     ) {

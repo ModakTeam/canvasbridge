@@ -27,6 +27,7 @@ export async function getAssignmentList(courseId: number): Promise<Assignment[]>
         
         return data.map((assignment: any) => new Assignment(
             assignment.name || "empty",
+            courseId,
             assignment.id || 0,
             assignment.description || "",
             assignment.due_at || "",

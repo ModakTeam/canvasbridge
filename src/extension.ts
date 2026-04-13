@@ -54,13 +54,12 @@ export async function activate(context: vscode.ExtensionContext) {
 		if (!selectedFiles || selectedFiles.length === 0) {
 			return;
 		}
-
-		const submissions = selectedFiles.map((fileUri) => new Submission(
-			fileUri,
-			vscode.TreeItemCollapsibleState.None
-		));
-
-		submissionsProvider.refresh(submissions);
+		
+		submissionsProvider.getChildren().then((subs) => {
+			const newSubmissions = selectedFiles.map(file => new Submission(file, vscode.TreeItemCollapsibleState.None));
+			const updatedSubmissions = subs.concat(newSubmissions);
+			submissionsProvider.refresh(updatedSubmissions);
+		});
 	});
 
 	vscode.commands.registerCommand('submission.deleteFile', async (submission: Submission) => {

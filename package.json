@@ -49,6 +49,13 @@
           "when": "view == submission",
           "group": "navigation"
         }
+      ],
+      "view/item/context": [
+        {
+          "command": "submission.deleteFile",
+          "when": "view == submission && viewItem == submission",
+          "group": "navigation"
+        }
       ]
     },
     "commands": [
@@ -75,6 +82,10 @@
           "light": "resources/light/new-file.svg",
           "dark": "resources/dark/new-file.svg"
         }
+      },
+      {
+        "command": "submission.deleteFile",
+        "title": "delete file"
       }
     ], 
     "configuration": {

@@ -63,7 +63,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	});
 
 	vscode.commands.registerCommand('submission.deleteFile', async (submission: Submission) => {
-		const submissions = submissionsProvider.getChildren().then((subs) => {
+		submissionsProvider.getChildren().then((subs) => {
 			const updatedSubmissions = subs.filter((sub) => sub.uri.fsPath !== submission.uri.fsPath);
 			submissionsProvider.refresh(updatedSubmissions);
 		});

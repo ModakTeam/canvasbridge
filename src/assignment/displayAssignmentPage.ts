@@ -21,8 +21,8 @@ export async function displayAssignmentPage(assignment: Assignment) {
         if (message.command === 'submit') {
             vscode.window.showInformationMessage("과제 제출 시작");
             const comment = await vscode.window.showInputBox({
-                prompt: '과제 제출과 함께 전달할 코멘트를 입력하세요 (선택 사항)',
-                placeHolder: '코멘트 입력 (선택 사항)',
+                prompt: '과제 코멘트를 입력하세요 (선택 사항)',
+                placeHolder: '코멘트...',
                 value: '',
                 ignoreFocusOut: true
             });

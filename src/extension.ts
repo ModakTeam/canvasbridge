@@ -57,8 +57,12 @@ export async function activate(context: vscode.ExtensionContext) {
 		
 		submissionsProvider.getChildren().then((subs) => {
 			const newSubmissions = selectedFiles.map(file => new Submission(file, vscode.TreeItemCollapsibleState.None));
-			const updatedSubmissions = subs.concat(newSubmissions);
-			submissionsProvider.refresh(updatedSubmissions);
+			for (const sub of newSubmissions) {
+				if (!subs.some(existingSub => existingSub.uri.fsPath === sub.uri.fsPath)) {
+					subs.push(sub);
+				}
+			}
+			submissionsProvider.refresh(subs);
 		});
 	});
 

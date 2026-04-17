@@ -9,10 +9,27 @@ export async function displayAssignmentPage(assignment: Assignment) {
     const panel = vscode.window.createWebviewPanel(
         'assignmentPage',
         `Assignment: ${assignment.label}`,
-        vscode.ViewColumn.Two
+        vscode.ViewColumn.Two,
+        {
+            enableScripts: true,
+        }
     );
     
     panel.webview.html = getWebviewContent(assignment, theme);
+
+    panel.webview.onDidReceiveMessage(async message => {
+        if (message.command === 'submit') {
+            vscode.window.showInformationMessage("과제 제출 시작");
+            const comment = await vscode.window.showInputBox({
+                prompt: '과제 제출과 함께 전달할 코멘트를 입력하세요 (선택 사항)',
+                placeHolder: '코멘트 입력 (선택 사항)',
+                value: '',
+                ignoreFocusOut: true
+            });
+
+		    vscode.window.showInformationMessage(`제출되었습니다!${comment ? ` 코멘트: ${comment}` : ''}`, { modal: true });
+        }
+    });
 }
 
 function getWebviewContent(assignment: Assignment, theme: 'light' | 'dark'): string {
@@ -29,6 +46,16 @@ function getWebviewContent(assignment: Assignment, theme: 'light' | 'dark'): str
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>${assignment.label}</title>
+            <script>
+                const vscode = acquireVsCodeApi();
+                
+                document.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    vscode.postMessage({
+                        command: 'submit'
+                    });
+                });
+            </script>
             <style>
                 :root {
                     --bg-top: #f7efe2;

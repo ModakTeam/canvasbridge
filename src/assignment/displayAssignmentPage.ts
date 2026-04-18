@@ -18,7 +18,27 @@ export async function displayAssignmentPage(assignment: Assignment) {
     panel.webview.html = getWebviewContent(assignment, theme);
 
     panel.webview.onDidReceiveMessage(async message => {
-        if (message.command === 'submit') {
+        if (message.command === 'upload') {
+            const files = await vscode.window.showOpenDialog({
+                canSelectMany: true,
+                openLabel: '업로드할 파일 선택',
+                filters: {
+                    'All Files': ['*']
+                }
+            });
+
+            if (files && files.length > 0) {
+                for (const file of files) {
+                    if (!assignment.submissions.some(uri => uri.fsPath === file.fsPath)) {
+                        assignment.submissions.push(file);
+                    }
+                }
+                panel.webview.postMessage({
+                    command: 'filesUploaded',
+                    files: assignment.submissions
+                });
+            }
+        } else if (message.command === 'submit') {
             vscode.window.showInformationMessage("과제 제출 시작");
             const comment = await vscode.window.showInputBox({
                 prompt: '과제 코멘트를 입력하세요 (선택 사항)',
@@ -48,6 +68,41 @@ function getWebviewContent(assignment: Assignment, theme: 'light' | 'dark'): str
             <title>${assignment.label}</title>
             <script>
                 const vscode = acquireVsCodeApi();
+
+                function renderUploadedFiles(files) {
+                    const fileList = document.getElementById('uploadedFileList');
+                    if (!fileList) {
+                        return;
+                    }
+
+                    if (!Array.isArray(files) || files.length === 0) {
+                        fileList.innerHTML = '<li class="empty">아직 업로드된 파일이 없습니다.</li>';
+                        return;
+                    }
+
+                    fileList.innerHTML = files.map(file => \`<li>\${file.path.split('/').pop()}</li>\`).join('');
+                }
+
+                document.addEventListener('DOMContentLoaded', () => {
+                    const uploadButton = document.getElementById('uploadFilesButton');
+                    if (!uploadButton) {
+                        return;
+                    }
+
+                    uploadButton.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        vscode.postMessage({
+                            command: 'upload'
+                        });
+                    });
+                });
+
+                window.addEventListener('message', event => {
+                    const message = event.data;
+                    if (message.command === 'filesUploaded') {
+                        renderUploadedFiles(message.files);
+                    }
+                });
                 
                 document.addEventListener('submit', (e) => {
                     e.preventDefault();
@@ -234,6 +289,10 @@ function getWebviewContent(assignment: Assignment, theme: 'light' | 'dark'): str
                 }
 
                 .uploaded-title {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 12px;
                     margin-bottom: 10px;
                     font-size: 0.95rem;
                     font-weight: 700;
@@ -246,6 +305,58 @@ function getWebviewContent(assignment: Assignment, theme: 'light' | 'dark'): str
                     list-style: none;
                     display: grid;
                     gap: 8px;
+                }
+
+                .uploaded-list li:not(.empty) {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    padding: 10px 12px;
+                    border-radius: 12px;
+                    border: 1px solid var(--chip-border);
+                    background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(245, 251, 255, 0.88));
+                    color: var(--ink);
+                    font-size: 0.9rem;
+                    font-weight: 600;
+                    line-height: 1.35;
+                    word-break: break-all;
+                    transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+                }
+
+                .uploaded-list li:not(.empty)::before {
+                    content: '파일';
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 22px;
+                    min-width: 40px;
+                    padding: 0 8px;
+                    border-radius: 999px;
+                    border: 1px solid rgba(15, 109, 138, 0.22);
+                    background: rgba(15, 109, 138, 0.12);
+                    color: var(--brand-strong);
+                    font-size: 0.72rem;
+                    font-weight: 800;
+                    letter-spacing: 0.02em;
+                    flex-shrink: 0;
+                }
+
+                .uploaded-list li:not(.empty):hover {
+                    transform: translateY(-1px);
+                    border-color: rgba(15, 109, 138, 0.35);
+                    box-shadow: 0 8px 18px rgba(15, 109, 138, 0.16);
+                }
+
+                body.theme-dark .uploaded-list li:not(.empty) {
+                    background: linear-gradient(180deg, rgba(31, 49, 59, 0.9), rgba(23, 38, 46, 0.92));
+                    border-color: #385f72;
+                    color: #dbeaf3;
+                }
+
+                body.theme-dark .uploaded-list li:not(.empty)::before {
+                    border-color: rgba(132, 205, 226, 0.34);
+                    background: rgba(90, 167, 192, 0.2);
+                    color: #c8ebf5;
                 }
 
                 .empty {
@@ -306,6 +417,11 @@ function getWebviewContent(assignment: Assignment, theme: 'light' | 'dark'): str
                     .submit-card {
                         flex-direction: column;
                         align-items: stretch;
+                    }
+
+                    .uploaded-title {
+                        flex-direction: column;
+                        align-items: flex-start;
                     }
 
                     .submit-btn {

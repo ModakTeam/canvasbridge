@@ -108,12 +108,18 @@ function getWebviewContent(assignment: Assignment, theme: 'light' | 'dark'): str
                     gap: 18px;
                 }
 
-                .hero {
-                    padding: 24px;
+                .hero,
+                .content-card,
+                .uploaded-files,
+                .submit-card {
                     border-radius: 18px;
                     border: 1px solid var(--surface-border);
-                    background: var(--surface);
                     box-shadow: var(--shadow);
+                }
+
+                .hero {
+                    padding: 24px;
+                    background: var(--surface);
                     animation: riseIn 0.55s ease-out both;
                 }
 
@@ -144,10 +150,7 @@ function getWebviewContent(assignment: Assignment, theme: 'light' | 'dark'): str
                 }
 
                 .content-card {
-                    border-radius: 18px;
-                    border: 1px solid var(--surface-border);
                     background: rgba(255, 255, 255, 0.93);
-                    box-shadow: var(--shadow);
                     overflow: hidden;
                     animation: riseIn 0.65s ease-out 0.08s both;
                 }
@@ -179,10 +182,7 @@ function getWebviewContent(assignment: Assignment, theme: 'light' | 'dark'): str
 
                 .submit-card {
                     padding: 18px 20px;
-                    border-radius: 18px;
-                    border: 1px solid var(--surface-border);
                     background: var(--surface);
-                    box-shadow: var(--shadow);
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
@@ -194,6 +194,66 @@ function getWebviewContent(assignment: Assignment, theme: 'light' | 'dark'): str
                     margin: 0;
                     color: var(--ink-soft);
                     font-size: 0.94rem;
+                }
+
+                .upload-block {
+                    display: grid;
+                    gap: 8px;
+                }
+
+                .upload-help {
+                    margin: 0;
+                    font-size: 0.84rem;
+                    color: var(--ink-soft);
+                }
+
+                .inline-form {
+                    display: inline;
+                }
+
+                .upload-btn {
+                    width: fit-content;
+                    border: 1px solid var(--chip-border);
+                    border-radius: 10px;
+                    padding: 8px 12px;
+                    font-size: 0.86rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                    background: var(--chip);
+                    color: var(--brand-strong);
+                }
+
+                .upload-btn:hover {
+                    filter: brightness(0.98);
+                }
+
+                .uploaded-files {
+                    padding: 18px 20px;
+                    background: var(--surface);
+                    animation: riseIn 0.85s ease-out 0.22s both;
+                }
+
+                .uploaded-title {
+                    margin-bottom: 10px;
+                    font-size: 0.95rem;
+                    font-weight: 700;
+                    color: var(--ink-soft);
+                }
+
+                .uploaded-list {
+                    margin: 0;
+                    padding: 0;
+                    list-style: none;
+                    display: grid;
+                    gap: 8px;
+                }
+
+                .empty {
+                    padding: 10px 12px;
+                    border-radius: 12px;
+                    border: 1px dashed var(--chip-border);
+                    color: var(--ink-soft);
+                    font-size: 0.86rem;
                 }
 
                 .submit-btn {
@@ -238,7 +298,8 @@ function getWebviewContent(assignment: Assignment, theme: 'light' | 'dark'): str
 
                     .hero,
                     .content-card,
-                    .submit-card {
+                    .submit-card,
+                    .uploaded-files {
                         border-radius: 14px;
                     }
 
@@ -271,8 +332,22 @@ function getWebviewContent(assignment: Assignment, theme: 'light' | 'dark'): str
                     </div>
                 </section>
 
+                <section class="uploaded-files">
+                    <div class="uploaded-title">
+                        업로드된 파일
+                        <form id="fileUploadForm" class="inline-form" action="/upload" method="post">
+                            <button class="upload-btn" id="uploadFilesButton" type="button">파일 업로드</button>
+                        </form>
+                    </div>
+                    <div class="upload-block">
+                        <p class="upload-help">파일을 선택하면 아래 목록에 표시됩니다. 같은 파일은 한 번만 추가됩니다.</p>
+                        <ul class="uploaded-list" id="uploadedFileList" aria-live="polite">
+                            <li class="empty">아직 업로드된 파일이 없습니다.</li>
+                        </ul>
+                    </div>
+                </section>
+
                 <form class="submit-card" action="/submit" method="post">
-                    <input type="hidden" name="assignmentId" value="${assignment.assignmentId}">
                     <p>제출 전 과제 요건과 첨부 파일을 다시 확인하세요.</p>
                     <button class="submit-btn" type="submit">과제 제출하기</button>
                 </form>

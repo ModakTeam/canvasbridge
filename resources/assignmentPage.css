@@ -196,6 +196,7 @@ body.theme-dark .content-header {
 .uploaded-list li:not(.empty) {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 10px;
     padding: 10px 12px;
     border-radius: 12px;
@@ -207,6 +208,33 @@ body.theme-dark .content-header {
     line-height: 1.35;
     word-break: break-all;
     transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+
+.uploaded-file-name {
+    min-width: 0;
+    flex: 1;
+}
+
+.delete-upload-btn {
+    border: 1px solid rgba(15, 109, 138, 0.26);
+    border-radius: 9px;
+    padding: 6px 10px;
+    background: rgba(255, 255, 255, 0.86);
+    color: var(--brand-strong);
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: filter 140ms ease, transform 140ms ease;
+}
+
+.delete-upload-btn:hover {
+    filter: brightness(0.97);
+    transform: translateY(-1px);
+}
+
+.delete-upload-btn:active {
+    transform: translateY(0);
 }
 
 .uploaded-list li:not(.empty)::before {
@@ -242,6 +270,12 @@ body.theme-dark .uploaded-list li:not(.empty) {
 body.theme-dark .uploaded-list li:not(.empty)::before {
     border-color: rgba(132, 205, 226, 0.34);
     background: rgba(90, 167, 192, 0.2);
+    color: #c8ebf5;
+}
+
+body.theme-dark .delete-upload-btn {
+    border-color: rgba(132, 205, 226, 0.34);
+    background: rgba(18, 29, 36, 0.88);
     color: #c8ebf5;
 }
 

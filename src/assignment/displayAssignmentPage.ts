@@ -44,6 +44,24 @@ export async function displayAssignmentPage(assignment: Assignment, extensionUri
                     files: assignment.submissions
                 });
             }
+        } else if (message.command === 'removeUploadedFile') {
+            const fileKey = typeof message.fileKey === 'string' ? message.fileKey : '';
+            if (!fileKey) {
+                return;
+            }
+
+            const updatedSubmissions = assignment.submissions.filter(uri => {
+                const uriPath = typeof uri.path === 'string' ? uri.path : '';
+                return uri.fsPath !== fileKey && uriPath !== fileKey;
+            });
+
+            if (updatedSubmissions.length !== assignment.submissions.length) {
+                assignment.submissions = updatedSubmissions;
+                panel.webview.postMessage({
+                    command: 'filesUploaded',
+                    files: assignment.submissions
+                });
+            }
         } else if (message.command === 'submit') {
             vscode.window.showInformationMessage("과제 제출 시작");
             const comment = await vscode.window.showInputBox({

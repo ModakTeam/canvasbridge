@@ -1,8 +1,11 @@
 import * as vscode from 'vscode';
 import { Assignment } from './assignment';
+import { uploadSubmissionFile } from './uploadSubmissionFile';
 
 export async function displayAssignmentPage(assignment: Assignment, extensionUri: vscode.Uri) {
     const config = vscode.workspace.getConfiguration('knu');
+    const token = config.get<string>('token') || '';
+
     const configuredTheme = config.get<string>('assignmentPageTheme') || 'light';
     const theme = configuredTheme === 'dark' ? 'dark' : 'light';
     const resourceRoot = vscode.Uri.joinPath(extensionUri, 'resources');
@@ -70,6 +73,20 @@ export async function displayAssignmentPage(assignment: Assignment, extensionUri
                 value: '',
                 ignoreFocusOut: true
             });
+
+            for (const fileUri of assignment.submissions) {
+                try {
+                    await uploadSubmissionFile({
+                        courseId: assignment.courseId,
+                        assignmentId: assignment.assignmentId,
+                        token,
+                        fileUri
+                    });
+                } catch (error) {
+                    vscode.window.showErrorMessage(`파일 업로드 실패: ${error instanceof Error ? error.message : String(error)}`);
+                    return;
+                }
+            }
 
 		    vscode.window.showInformationMessage(`제출되었습니다!${comment ? ` 코멘트: ${comment}` : ''}`, { modal: true });
         }

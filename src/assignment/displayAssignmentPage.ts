@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { Assignment } from './assignment';
 import { uploadSubmissionFile } from './uploadSubmissionFile';
+import { submitAssignment } from './submitAssignment';
 
 export async function displayAssignmentPage(assignment: Assignment, extensionUri: vscode.Uri) {
     const config = vscode.workspace.getConfiguration('knu');
@@ -92,6 +93,8 @@ export async function displayAssignmentPage(assignment: Assignment, extensionUri
             }
 
             console.log('업로드된 파일 ID:', uploadFileIds);
+
+            await submitAssignment(assignment.courseId, assignment.assignmentId, token, uploadFileIds, comment);
 		    vscode.window.showInformationMessage(`제출되었습니다!${comment ? ` 코멘트: ${comment}` : ''}`, { modal: true });
         }
     });

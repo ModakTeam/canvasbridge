@@ -86,12 +86,17 @@ export async function displayAssignmentPage(assignment: Assignment, extensionUri
                     });
                     uploadFileIds.push(fileId);
                 } catch (error) {
-                    vscode.window.showErrorMessage(`파일 업로드 실패: ${error instanceof Error ? error.message : String(error)}`);
+                    vscode.window.showErrorMessage(error instanceof Error ? error.message : '파일 업로드 중 알 수 없는 오류가 발생했습니다.');
                     return;
                 }
             }
 
-            await submitAssignment(assignment.courseId, assignment.assignmentId, token, uploadFileIds, comment);
+            try {
+                await submitAssignment(assignment.courseId, assignment.assignmentId, token, uploadFileIds, comment);
+            } catch (error) {
+                vscode.window.showErrorMessage(error instanceof Error ? error.message : '과제 제출 중 알 수 없는 오류가 발생했습니다.');
+                return;
+            }
 		    vscode.window.showInformationMessage(`제출되었습니다!`, { modal: true });
         }
     });

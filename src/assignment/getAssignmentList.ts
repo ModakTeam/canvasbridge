@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { Assignment } from './assignment';
+import { CANVAS_BASE_URL } from '../config';
 
 export async function getAssignmentList(courseId: number): Promise<Assignment[]> {
     const config = vscode.workspace.getConfiguration('knu');
@@ -11,7 +12,7 @@ export async function getAssignmentList(courseId: number): Promise<Assignment[]>
     }
 
     try {
-        const response = await fetch(`https://canvas.knu.ac.kr/api/v1/courses/${courseId}/assignments`, {
+        const response = await fetch(`${CANVAS_BASE_URL}/api/v1/courses/${courseId}/assignments`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

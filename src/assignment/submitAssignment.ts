@@ -1,3 +1,5 @@
+import { CANVAS_BASE_URL } from '../config';
+
 export async function submitAssignment(courseId: number, assignmentId: number, token: string, uploadFileIds: number[], comment?: string) {
     const submissionData = {
         comment: {
@@ -13,7 +15,7 @@ export async function submitAssignment(courseId: number, assignmentId: number, t
         };
     }
 
-    const response = await fetch(`https://canvas.knu.ac.kr/api/v1/courses/${courseId}/assignments/${assignmentId}/submissions`, {
+    const response = await fetch(`${CANVAS_BASE_URL}/api/v1/courses/${courseId}/assignments/${assignmentId}/submissions`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

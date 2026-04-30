@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { Course } from './course';
+import { CANVAS_BASE_URL } from '../config';
 
 export async function getCourseList(): Promise<Course[]> {
     const config = vscode.workspace.getConfiguration('knu');
@@ -11,7 +12,7 @@ export async function getCourseList(): Promise<Course[]> {
     }
 
     try {
-        const response = await fetch('https://canvas.knu.ac.kr/api/v1/courses?enrollment_state=active', {
+        const response = await fetch(`${CANVAS_BASE_URL}/api/v1/courses?enrollment_state=active`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

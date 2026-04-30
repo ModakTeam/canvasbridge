@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { CANVAS_BASE_URL } from '../config';
 
 type UploadPreparationResponse = {
     upload_url: string;
@@ -16,7 +17,7 @@ export async function uploadSubmissionFile(params: {
     const fileStat = await vscode.workspace.fs.stat(fileUri);
     const fileParentFolderPath = fileUri.fsPath.split('/').slice(0, -1).join('/') || '';
 
-    let response = await fetch(`https://canvas.knu.ac.kr/api/v1/courses/${courseId}/assignments/${assignmentId}/submissions/self/files`, {
+    let response = await fetch(`${CANVAS_BASE_URL}/api/v1/courses/${courseId}/assignments/${assignmentId}/submissions/self/files`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

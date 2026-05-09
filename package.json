@@ -1,8 +1,12 @@
 {
-  "name": "knu",
+  "name": "knu-lms-extension",
   "displayName": "KNU-lms-extension",
   "description": "경북대학교 학습관리시스템(LMS)의 기능을 사용할 수 있는 확장 프로그램입니다.",
   "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ProjectUnisol/KNU-lms-extension.git"
+  },
   "engines": {
     "vscode": "^1.89.0"
   },
@@ -12,12 +16,71 @@
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "lmsContainer",
+          "title": "KNU lms extension",
+          "icon": "resources/knu_logo.svg"
+        }
+      ]
+    },
+    "views": {
+      "lmsContainer": [
+        {
+          "id": "course",
+          "name": "course"
+        },
+        {
+          "id": "assignment",
+          "name": "assignment"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "course.refreshEntry",
+          "when": "view == course",
+          "group": "navigation"
+        }
+      ]
+    },
     "commands": [
       {
-        "command": "knu.helloWorld",
-        "title": "Hello World"
+        "command": "course.refreshEntry",
+        "title": "refresh",
+        "icon": {
+          "light": "resources/light/refresh.svg",
+          "dark": "resources/dark/refresh.svg"
+        }
+      },
+      {
+        "command": "course.listAssignment",
+        "title": "list assignment"
+      },
+      {
+        "command": "assignment.displayAssignmentPage",
+        "title": "display assignment page"
       }
-    ]
+    ], 
+    "configuration": {
+      "type": "object",
+      "title": "KNU",
+      "properties": {
+        "knu.token": {
+          "type": "string",
+          "default": "",
+          "description": "LMS의 API를 사용하기 위한 토큰을 입력해주세요."
+        },
+        "knu.assignmentPageTheme": {
+          "type": "string",
+          "default": "light",
+          "description": "과제 페이지의 테마를 선택해주세요.",
+          "enum": ["light", "dark"]
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

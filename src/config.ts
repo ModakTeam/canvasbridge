@@ -1,0 +1,1 @@
+export const CANVAS_BASE_URL = 'https://canvas.knu.ac.kr';

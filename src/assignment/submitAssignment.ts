@@ -1,6 +1,8 @@
-import { CANVAS_BASE_URL } from '../config';
+import { getProperties } from '../getProperites';
 
-export async function submitAssignment(courseId: number, assignmentId: number, token: string, uploadFileIds: number[], comment?: string) {
+export async function submitAssignment(courseId: number, assignmentId: number, uploadFileIds: number[], comment?: string) {
+    const { token, baseURL } = getProperties();
+
     const submissionData = {
         comment: {
             text_comment: comment || ''
@@ -15,7 +17,7 @@ export async function submitAssignment(courseId: number, assignmentId: number, t
         };
     }
 
-    const response = await fetch(`${CANVAS_BASE_URL}/api/v1/courses/${courseId}/assignments/${assignmentId}/submissions`, {
+    const response = await fetch(`${baseURL}/api/v1/courses/${courseId}/assignments/${assignmentId}/submissions`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

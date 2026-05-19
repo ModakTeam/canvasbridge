@@ -1,6 +1,6 @@
-# knu README
+# CanvasBridge README
 
-This is the README for your extension "knu". After writing up a brief description, we recommend including the following sections.
+This is the README for your extension "CanvasBridge". After writing up a brief description, we recommend including the following sections.
 
 ## Features
 

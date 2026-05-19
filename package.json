@@ -1,14 +1,14 @@
 {
-  "name": "knu-lms-extension",
-  "displayName": "KNU-lms-extension",
-  "description": "경북대학교 학습관리시스템(LMS)의 기능을 사용할 수 있는 확장 프로그램입니다.",
-  "version": "0.0.1",
+  "name": "canvasbridge",
+  "displayName": "CanvasBridge",
+  "description": "CanvasBridge is an extension that allows you to use the features of the Canvas learning management system.",
+  "version": "0.0.2",
   "vsce": {
-    "baseImagesUrl": "https://raw.githubusercontent.com/ProjectUnisol/KNU-lms-extension/main"
+    "baseImagesUrl": "https://raw.githubusercontent.com/ModakTeam/canvasbridge/main"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ProjectUnisol/KNU-lms-extension.git"
+    "url": "https://github.com/ModakTeam/canvasbridge.git"
   },
   "engines": {
     "vscode": "^1.89.0"
@@ -23,8 +23,8 @@
       "activitybar": [
         {
           "id": "lmsContainer",
-          "title": "KNU lms extension",
-          "icon": "resources/knu_logo.svg"
+          "title": "CanvasBridge",
+          "icon": "resources/canvasbridge_logo.svg"
         }
       ]
     },
@@ -69,14 +69,14 @@
     ], 
     "configuration": {
       "type": "object",
-      "title": "KNU",
+      "title": "CanvasBridge Configuration",
       "properties": {
-        "knu.token": {
+        "canvasbridge.token": {
           "type": "string",
           "default": "",
           "description": "LMS의 API를 사용하기 위한 토큰을 입력해주세요."
         },
-        "knu.assignmentPageTheme": {
+        "canvasbridge.assignmentPageTheme": {
           "type": "string",
           "default": "light",
           "description": "과제 페이지의 테마를 선택해주세요.",

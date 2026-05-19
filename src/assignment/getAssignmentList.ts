@@ -3,7 +3,7 @@ import { Assignment } from './assignment';
 import { CANVAS_BASE_URL } from '../config';
 
 export async function getAssignmentList(courseId: number): Promise<Assignment[]> {
-    const config = vscode.workspace.getConfiguration('knu');
+    const config = vscode.workspace.getConfiguration('canvasbridge');
     const token: any = config.get<string>('token') || '';
 
     if (token === '') {

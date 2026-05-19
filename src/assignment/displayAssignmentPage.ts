@@ -4,7 +4,7 @@ import { uploadSubmissionFile } from './uploadSubmissionFile';
 import { submitAssignment } from './submitAssignment';
 
 export async function displayAssignmentPage(assignment: Assignment, extensionUri: vscode.Uri) {
-    const config = vscode.workspace.getConfiguration('knu');
+    const config = vscode.workspace.getConfiguration('canvasbridge');
     const token = config.get<string>('token') || '';
 
     const configuredTheme = config.get<string>('assignmentPageTheme') || 'light';

@@ -74,12 +74,12 @@
         "canvasbridge.baseURL": {
           "type": "string",
           "default": "",
-          "description": "LMS의 API를 사용하기 위한 기본 URL을 입력해주세요."
+          "description": "Canvas API를 사용하기 위한 기본 URL을 입력해주세요."
         },
         "canvasbridge.token": {
           "type": "string",
           "default": "",
-          "description": "LMS의 API를 사용하기 위한 토큰을 입력해주세요."
+          "description": "Canvas API를 사용하기 위한 토큰을 입력해주세요."
         },
         "canvasbridge.assignmentPageTheme": {
           "type": "string",

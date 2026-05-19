@@ -6,11 +6,11 @@ export function getProperties(): { token: string; baseURL: string } {
     let baseURL = config.get<string>('baseURL') || '';
 
     if (token === '') {
-        vscode.window.showWarningMessage('LMS 토큰을 설정해주세요.');
+        vscode.window.showWarningMessage('Canvas API 토큰을 설정해주세요.');
     }
 
     if (baseURL === '') {
-        vscode.window.showWarningMessage('LMS의 API URL을 설정해주세요.');
+        vscode.window.showWarningMessage('Canvas API URL을 설정해주세요.');
     }
 
     if (baseURL.endsWith('/')) {

@@ -19,7 +19,7 @@ export async function getAssignmentList(courseId: number): Promise<Assignment[]>
         });
 
         if (!response.ok) {
-            throw new Error(`LMS 연결 실패: ${response.status}`);
+            throw new Error(`Canvas 연결 실패: ${response.status}`);
         }
         
         const data: any = await response.json();
@@ -37,7 +37,7 @@ export async function getAssignmentList(courseId: number): Promise<Assignment[]>
             vscode.TreeItemCollapsibleState.None
         ));
     } catch (error: any) {
-        vscode.window.showErrorMessage('LMS 연결 실패: ' + error.message);
+        vscode.window.showErrorMessage('Canvas 연결 실패: ' + error.message);
         return [];
     }
 }

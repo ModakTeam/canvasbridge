@@ -41,6 +41,7 @@ export class Assignment extends vscode.TreeItem {
         public readonly collapsibleState: vscode.TreeItemCollapsibleState
     ) {
         super(label, collapsibleState);
+        this.iconPath = this.getThemeIcon(workflow_state);
         this.tooltip = this.buildTooltip();
         this.command = {
             command: 'assignment.displayAssignmentPage',
@@ -98,6 +99,21 @@ export class Assignment extends vscode.TreeItem {
                 return '검토 대기';
             default:
                 return state;
+        }
+    }
+
+    private getThemeIcon(workflowState: string): vscode.ThemeIcon {
+        switch (workflowState) {
+            case 'submitted':
+                return new vscode.ThemeIcon('check', new vscode.ThemeColor('canvasbridge.status.submitted'));
+            case 'unsubmitted':
+                return new vscode.ThemeIcon('chrome-close', new vscode.ThemeColor('canvasbridge.status.unsubmitted'));
+            case 'graded':
+                return new vscode.ThemeIcon('pass-filled', new vscode.ThemeColor('canvasbridge.status.graded'));
+            case 'pending_review':
+                return new vscode.ThemeIcon('pass', new vscode.ThemeColor('canvasbridge.status.pendingReview'));
+            default:
+                return new vscode.ThemeIcon('question', new vscode.ThemeColor('canvasbridge.status.default'));
         }
     }
 }

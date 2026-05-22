@@ -21,6 +21,53 @@
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
+    "colors": [
+      {
+        "id": "canvasbridge.status.submitted",
+        "description": "Submitted Icon",
+        "defaults": {
+          "light": "#2E7D32",
+          "dark": "#66BB6A",
+          "highContrast": "#00FF00"
+        }
+      },
+      {
+        "id": "canvasbridge.status.unsubmitted",
+        "description": "Unsubmitted Icon",
+        "defaults": {
+          "light": "#C62828",
+          "dark": "#EF5350",
+          "highContrast": "#FF0000"
+        }
+      },
+      {
+        "id": "canvasbridge.status.graded",
+        "description": "Graded Icon",
+        "defaults": {
+          "light": "#1565C0",
+          "dark": "#42A5F5",
+          "highContrast": "#00B0FF"
+        }
+      },
+      {
+        "id": "canvasbridge.status.pendingReview",
+        "description": "Pending Review Icon",
+        "defaults": {
+          "light": "#EF6C00",
+          "dark": "#FFA726",
+          "highContrast": "#FFFF00"
+        }
+      },
+      {
+        "id": "canvasbridge.status.default",
+        "description": "Default Icon",
+        "defaults": {
+          "light": "#616161",
+          "dark": "#BDBDBD",
+          "highContrast": "#FFFFFF"
+        }
+      }
+    ],
     "viewsContainers": {
       "activitybar": [
         {

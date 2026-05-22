@@ -2,6 +2,7 @@
   "name": "canvasbridge",
   "displayName": "CanvasBridge",
   "description": "CanvasBridge is an extension that allows you to use the features of the Canvas learning management system.",
+  "publisher": "Modak",
   "version": "0.0.2",
   "icon": "resources/canvasbridge_logo.png",
   "vsce": {

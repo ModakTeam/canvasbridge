@@ -6,6 +6,7 @@ import { getProperties } from '../getProperites';
 
 export async function displayAssignmentPage(assignment: Assignment, extensionUri: vscode.Uri) {
     const { token, baseURL } = getProperties();
+    const workflowStateText = assignment.formatWorkflowState(assignment.workflow_state);
 
     const configuredTheme = vscode.workspace.getConfiguration('canvasbridge').get<string>('assignmentPageTheme') || 'light';
     const theme = configuredTheme === 'dark' ? 'dark' : 'light';
@@ -13,7 +14,7 @@ export async function displayAssignmentPage(assignment: Assignment, extensionUri
 
     const panel = vscode.window.createWebviewPanel(
         'assignmentPage',
-        `Assignment: ${assignment.label}`,
+        `Assignment: ${assignment.label} [${workflowStateText}]`,
         vscode.ViewColumn.Two,
         {
             enableScripts: true,
@@ -109,6 +110,9 @@ function getWebviewContent(
     const submitTypeText = assignment.submissionTypes?.length
         ? assignment.submissionTypes.join(' · ')
         : '제출 방식 없음';
+    const workflowStateText = assignment.formatWorkflowState(assignment.workflow_state);
+    const workflowStateColor = assignment.getWorkflowStateColorId().replace(/\./g, '-');
+    const workflowStateColorFallback = assignment.getWorkflowStateColorHex(vscode.window.activeColorTheme.kind);
 
     return `
         <!DOCTYPE html>
@@ -123,7 +127,19 @@ function getWebviewContent(
             <script id="initialUploadedFiles" type="application/json">${initialFilesJson}</script>
             <div class="shell">
                 <section class="hero">
-                    <h1>${assignment.label}</h1>
+                    <h1>
+                        ${assignment.label}
+                        <span
+                            class="workflow-state-badge"
+                            style="
+                                color: var(--vscode-${workflowStateColor}, ${workflowStateColorFallback});
+                                border-color: var(--vscode-${workflowStateColor}, ${workflowStateColorFallback});
+                                background-color: ${workflowStateColorFallback}1A;
+                            "
+                        >
+                            ${workflowStateText}
+                        </span>
+                    </h1>
                     <div class="meta">
                         <span>마감: ${dueText}</span>
                         <span>배점: ${pointsText}</span>

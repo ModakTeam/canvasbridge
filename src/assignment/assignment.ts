@@ -102,18 +102,73 @@ export class Assignment extends vscode.TreeItem {
         }
     }
 
+    public getWorkflowStateColorId(state: string = this.workflow_state): string {
+        switch (state) {
+            case 'submitted':
+                return 'canvasbridge.status.submitted';
+            case 'unsubmitted':
+                return 'canvasbridge.status.unsubmitted';
+            case 'graded':
+                return 'canvasbridge.status.graded';
+            case 'pending_review':
+                return 'canvasbridge.status.pendingReview';
+            default:
+                return 'canvasbridge.status.default';
+        }
+    }
+
+    public getWorkflowStateColorHex(
+        themeKind: vscode.ColorThemeKind,
+        state: string = this.workflow_state
+    ): string {
+        const isDark = themeKind === vscode.ColorThemeKind.Dark;
+        const isHighContrast =
+            themeKind === vscode.ColorThemeKind.HighContrast ||
+            themeKind === vscode.ColorThemeKind.HighContrastLight;
+
+        switch (state) {
+            case 'submitted':
+                if (isHighContrast) {
+                    return '#00FF00';
+                }
+                return isDark ? '#66BB6A' : '#2E7D32';
+            case 'unsubmitted':
+                if (isHighContrast) {
+                    return '#FF0000';
+                }
+                return isDark ? '#EF5350' : '#C62828';
+            case 'graded':
+                if (isHighContrast) {
+                    return '#00B0FF';
+                }
+                return isDark ? '#42A5F5' : '#1565C0';
+            case 'pending_review':
+                if (isHighContrast) {
+                    return '#FFFF00';
+                }
+                return isDark ? '#FFA726' : '#EF6C00';
+            default:
+                if (isHighContrast) {
+                    return '#FFFFFF';
+                }
+                return isDark ? '#BDBDBD' : '#616161';
+        }
+    }
+
     private getThemeIcon(workflowState: string): vscode.ThemeIcon {
+        const colorId = this.getWorkflowStateColorId(workflowState);
+
         switch (workflowState) {
             case 'submitted':
-                return new vscode.ThemeIcon('check', new vscode.ThemeColor('canvasbridge.status.submitted'));
+                return new vscode.ThemeIcon('check', new vscode.ThemeColor(colorId));
             case 'unsubmitted':
-                return new vscode.ThemeIcon('chrome-close', new vscode.ThemeColor('canvasbridge.status.unsubmitted'));
+                return new vscode.ThemeIcon('chrome-close', new vscode.ThemeColor(colorId));
             case 'graded':
-                return new vscode.ThemeIcon('pass-filled', new vscode.ThemeColor('canvasbridge.status.graded'));
+                return new vscode.ThemeIcon('pass-filled', new vscode.ThemeColor(colorId));
             case 'pending_review':
-                return new vscode.ThemeIcon('pass', new vscode.ThemeColor('canvasbridge.status.pendingReview'));
+                return new vscode.ThemeIcon('pass', new vscode.ThemeColor(colorId));
             default:
-                return new vscode.ThemeIcon('question', new vscode.ThemeColor('canvasbridge.status.default'));
+                return new vscode.ThemeIcon('question', new vscode.ThemeColor(colorId));
         }
     }
 }

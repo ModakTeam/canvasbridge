@@ -24,8 +24,20 @@ export async function getAssignmentList(courseId: number): Promise<Assignment[]>
         
         const data: any = await response.json();
         
-        return data.map((assignment: any) => new Assignment(
+        return Promise.all(data.map(async (assignment: any) => {
+            const workflowState = await fetch(`${baseURL}/api/v1/courses/${courseId}/assignments/${assignment.id}/submissions/self`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+            }).then(res => res.json())
+              .then(submissions => submissions.workflow_state || 'unsubmitted')
+              .catch(() => 'unsubmitted');
+
+            return new Assignment(
             assignment.name || 'empty',
+            workflowState,
             assignment.id || 0,
             courseId,
             assignment.description || '',
@@ -35,7 +47,7 @@ export async function getAssignmentList(courseId: number): Promise<Assignment[]>
             assignment.published || false,
             [],
             vscode.TreeItemCollapsibleState.None
-        ));
+        )}));
     } catch (error: any) {
         vscode.window.showErrorMessage('Canvas 연결 실패: ' + error.message);
         return [];

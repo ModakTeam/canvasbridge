@@ -29,6 +29,7 @@ export class AssignmentsProvider implements vscode.TreeDataProvider<Assignment> 
 export class Assignment extends vscode.TreeItem {
     constructor(
         public readonly label: string,
+        public readonly workflow_state: string,
         public readonly assignmentId: number,
         public readonly courseId: number,
         public readonly html: string,
@@ -59,7 +60,7 @@ export class Assignment extends vscode.TreeItem {
         const publishText = this.published ? '공개' : '비공개';
 
         return new vscode.MarkdownString(
-            `**${this.label}**\n\n` +
+            `**${this.label}** [${this.formatWorkflowState(this.workflow_state)}]\n\n` +
             `- 마감일: ${dueDateText}\n` +
             `- 배점: ${pointsText}\n` +
             `- 제출 방식: ${submissionTypesText}\n` +
@@ -83,5 +84,20 @@ export class Assignment extends vscode.TreeItem {
             second: '2-digit',
             hour12: false,
         }).format(date);
+    }
+
+    public formatWorkflowState(state: string): string {
+        switch (state) {
+            case 'submitted':
+                return '제출됨';
+            case 'unsubmitted':
+                return '미제출';
+            case 'graded':
+                return '채점됨';
+            case 'pending_review':
+                return '검토 대기';
+            default:
+                return state;
+        }
     }
 }

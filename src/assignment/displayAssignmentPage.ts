@@ -6,7 +6,6 @@ import { getProperties } from '../getProperites';
 
 export async function displayAssignmentPage(assignment: Assignment, extensionUri: vscode.Uri) {
     const { token, baseURL } = getProperties();
-    const workflowStateText = assignment.formatWorkflowState(assignment.workflow_state);
 
     const configuredTheme = vscode.workspace.getConfiguration('canvasbridge').get<string>('assignmentPageTheme') || 'light';
     const theme = configuredTheme === 'dark' ? 'dark' : 'light';
@@ -14,7 +13,7 @@ export async function displayAssignmentPage(assignment: Assignment, extensionUri
 
     const panel = vscode.window.createWebviewPanel(
         'assignmentPage',
-        `Assignment: ${assignment.label} [${workflowStateText}]`,
+        `Assignment: ${assignment.label}`,
         vscode.ViewColumn.Two,
         {
             enableScripts: true,

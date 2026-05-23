@@ -2,7 +2,6 @@ import * as vscode from 'vscode';
 import { Course, CoursesProvider } from './course/course';
 import { Assignment, AssignmentsProvider } from './assignment/assignment';
 import { getCourseList } from './course/getCourseList';
-import { getAssignmentList } from './assignment/getAssignmentList';
 import { displayAssignmentPage } from './assignment/displayAssignmentPage';
 
 export async function activate(context: vscode.ExtensionContext) {
@@ -24,8 +23,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	});
 
 	vscode.commands.registerCommand('course.listAssignment', async (course: Course) => {
-		const assignments = await getAssignmentList(course.courseId);
-		assignmentsProvider.refresh(assignments);
+		assignmentsProvider.refresh(course.courseId);
 	});
 
 	vscode.commands.registerCommand('assignment.displayAssignmentPage', async (assignment: Assignment) => {

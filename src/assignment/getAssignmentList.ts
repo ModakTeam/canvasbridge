@@ -36,15 +36,15 @@ export async function getAssignmentList(courseId: number): Promise<Assignment[]>
               .catch(() => 'unsubmitted');
 
             return new Assignment(
-            assignment.name || 'empty',
+            assignment.name,
             workflowState,
-            assignment.id || 0,
+            assignment.id,
             courseId,
-            assignment.description || '',
-            assignment.due_at || '',
-            assignment.points_possible || 0,
-            assignment.submission_types || [],
-            assignment.published || false,
+            assignment.description,
+            assignment.due_at,
+            assignment.points_possible,
+            assignment.submission_types,
+            assignment.published,
             [],
             vscode.TreeItemCollapsibleState.None
         )}));

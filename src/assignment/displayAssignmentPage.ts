@@ -5,8 +5,6 @@ import { submitAssignment } from './submitAssignment';
 import { getProperties } from '../getProperites';
 
 export async function displayAssignmentPage(assignment: Assignment, extensionUri: vscode.Uri) {
-    const { token, baseURL } = getProperties();
-
     const configuredTheme = vscode.workspace.getConfiguration('canvasbridge').get<string>('assignmentPageTheme') || 'light';
     const theme = configuredTheme === 'dark' ? 'dark' : 'light';
     const resourceRoot = vscode.Uri.joinPath(extensionUri, 'resources');

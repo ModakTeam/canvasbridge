@@ -2,7 +2,6 @@ import * as vscode from 'vscode';
 import { Assignment } from './assignment';
 import { uploadSubmissionFile } from './uploadSubmissionFile';
 import { submitAssignment } from './submitAssignment';
-import { getProperties } from '../getProperites';
 
 export async function displayAssignmentPage(assignment: Assignment, extensionUri: vscode.Uri) {
     const configuredTheme = vscode.workspace.getConfiguration('canvasbridge').get<string>('assignmentPageTheme') || 'light';

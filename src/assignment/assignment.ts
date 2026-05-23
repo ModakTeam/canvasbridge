@@ -45,8 +45,6 @@ export class AssignmentsProvider implements vscode.TreeDataProvider<Assignment> 
                     }).then(res => res.json())
                       .then(submissions => submissions.workflow_state);
 
-                    const submissions = this.assignments.find(a => a.courseId === courseId && a.assignmentId === assignment.id)?.submissions || [];
-
                     return new Assignment(
                     assignment.name,
                     workflowState,
@@ -57,7 +55,6 @@ export class AssignmentsProvider implements vscode.TreeDataProvider<Assignment> 
                     assignment.points_possible,
                     assignment.submission_types,
                     assignment.published,
-                    submissions,
                     vscode.TreeItemCollapsibleState.None
                     );
                 }));
@@ -89,7 +86,6 @@ export class Assignment extends vscode.TreeItem {
         public readonly pointsPossible: number,
         public readonly submissionTypes: string[],
         public readonly published: boolean,
-        public submissions: vscode.Uri[],
         public readonly collapsibleState: vscode.TreeItemCollapsibleState
     ) {
         super(label, collapsibleState);

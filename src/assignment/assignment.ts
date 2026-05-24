@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { getProperties } from '../getProperites';
 
 export class AssignmentsProvider implements vscode.TreeDataProvider<Assignment> {
     private _onDidChangeTreeData: vscode.EventEmitter<Assignment | undefined | null | void>
@@ -12,8 +13,56 @@ export class AssignmentsProvider implements vscode.TreeDataProvider<Assignment> 
         this.assignments = assignments;
     }
 
-    refresh(assignments: Assignment[]): void {
-        this.assignments = assignments;
+    async refresh(courseId: number): Promise<void> {
+        this.assignments = await (async () => {
+            const { token, baseURL } = getProperties();
+
+            if (token === '' || baseURL === '') {
+            return Promise.resolve([]);
+            }
+
+            try {
+                const response = await fetch(`${baseURL}/api/v1/courses/${courseId}/assignments`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                });
+                if (!response.ok) {
+                    throw new Error(`Canvas 연결 실패: ${response.status}`);
+                }
+
+                const data: any = await response.json();
+
+                return await Promise.all(data.map(async (assignment: any) => {
+                    const workflowState = await fetch(`${baseURL}/api/v1/courses/${courseId}/assignments/${assignment.id}/submissions/self`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                    }).then(res => res.json())
+                      .then(submissions => submissions.workflow_state);
+
+                    return new Assignment(
+                    assignment.name,
+                    workflowState,
+                    assignment.id,
+                    courseId,
+                    assignment.description,
+                    assignment.due_at,
+                    assignment.points_possible,
+                    assignment.submission_types,
+                    assignment.published,
+                    vscode.TreeItemCollapsibleState.None
+                    );
+                }));
+            } catch (error: any) {
+                vscode.window.showErrorMessage('Canvas 연결 실패: ' + error.message);
+                return [];
+            }
+        })();
         this._onDidChangeTreeData.fire();
     }
 
@@ -37,7 +86,6 @@ export class Assignment extends vscode.TreeItem {
         public readonly pointsPossible: number,
         public readonly submissionTypes: string[],
         public readonly published: boolean,
-        public submissions: vscode.Uri[],
         public readonly collapsibleState: vscode.TreeItemCollapsibleState
     ) {
         super(label, collapsibleState);

@@ -62,6 +62,12 @@ export async function displayAssignmentPage(assignment: Assignment, context: vsc
                 command: 'filesUploaded',
                 files: updatedSubmissions || []
             });
+        } else if (message.command === 'clearUploadedFiles') {
+            context.globalState.update(`submissions_${assignment.assignmentId}`, []);
+            panel.webview.postMessage({
+                command: 'filesUploaded',
+                files: []
+            });
         } else if (message.command === 'submit') {
             const uploadFileIds: number[] = [];
 
@@ -110,6 +116,10 @@ function getWebviewContent(
     const submitTypeText = assignment.submissionTypes?.length
         ? assignment.submissionTypes.join(' · ')
         : '제출 방식 없음';
+    const isTypeFileUpload = assignment.submissionTypes?.some(submissionType =>
+        submissionType === 'online_upload' || submissionType === 'media_recording'
+    ) ?? false;
+    const isTypeNone = assignment.submissionTypes?.length === 0 || assignment.submissionTypes?.includes('none');
     const workflowStateText = assignment.formatWorkflowState(assignment.workflow_state);
     const workflowStateColor = assignment.getWorkflowStateColorId().replace(/\./g, '-');
     const workflowStateColorFallback = assignment.getWorkflowStateColorHex(vscode.window.activeColorTheme.kind);
@@ -154,12 +164,16 @@ function getWebviewContent(
                     </div>
                 </section>
 
+                ${isTypeFileUpload ? `
                 <section class="uploaded-files">
                     <div class="uploaded-title">
-                        업로드된 파일
-                        <form id="fileUploadForm" class="inline-form" action="/upload" method="post">
-                            <button class="upload-btn" id="uploadFilesButton" type="button">파일 업로드</button>
-                        </form>
+                        <span class="uploaded-heading">업로드된 파일</span>
+                        <div class="upload-actions">
+                            <form id="fileUploadForm" class="inline-form" action="/upload" method="post">
+                                <button class="upload-btn" id="uploadFilesButton" type="button">파일 업로드</button>
+                            </form>
+                            <button class="clear-btn" id="clearFilesButton" type="button">전체 삭제</button>
+                        </div>
                     </div>
                     <div class="upload-block">
                         <p class="upload-help">파일을 선택하면 아래 목록에 표시됩니다. 같은 파일은 한 번만 추가됩니다.</p>
@@ -168,11 +182,14 @@ function getWebviewContent(
                         </ul>
                     </div>
                 </section>
+                ` : ''}
 
+                ${!isTypeNone ? `
                 <form class="submit-card" action="/submit" method="post">
                     <p>제출 전 과제 요건과 첨부 파일을 다시 확인하세요.</p>
                     <button class="submit-btn" type="submit">과제 제출하기</button>
                 </form>
+                ` : ''}
             </div>
             <script src="${scriptUri}"></script>
         </body>

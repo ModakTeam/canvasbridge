@@ -8,9 +8,16 @@ type UploadPreparationResponse = {
 
 export async function uploadSubmissionFile(courseId: number, assignmentId: number, fileUri: vscode.Uri): Promise<number> {
     const { token, baseURL } = getProperties();
-    const fileName = fileUri.fsPath.split('/').pop() || 'unknown';
-    const fileStat = await vscode.workspace.fs.stat(fileUri);
-    const fileParentFolderPath = fileUri.fsPath.split('/').slice(0, -1).join('/') || '';
+    const filePath = getFilePath(fileUri);
+    if (!filePath) {
+        throw new Error('업로드할 파일 경로를 찾을 수 없습니다.');
+    }
+
+    const localFileUri = vscode.Uri.file(filePath);
+    const fileName = filePath.split('/').pop() || 'unknown';
+    const fileStat = await vscode.workspace.fs.stat(localFileUri);
+    const fileParentFolderPath = filePath.split('/').slice(0, -1).join('/') || '';
+    console.log(fileParentFolderPath);
 
     let response = await fetch(`${baseURL}/api/v1/courses/${courseId}/assignments/${assignmentId}/submissions/self/files`, {
         method: 'POST',
@@ -31,7 +38,7 @@ export async function uploadSubmissionFile(courseId: number, assignmentId: numbe
 
     const { upload_url, upload_params } = await response.json() as UploadPreparationResponse;
 
-    const fileBytes = await vscode.workspace.fs.readFile(fileUri);
+    const fileBytes = await vscode.workspace.fs.readFile(localFileUri);
     const arrayBuffer = new ArrayBuffer(fileBytes.byteLength);
     new Uint8Array(arrayBuffer).set(fileBytes);
 
@@ -54,4 +61,20 @@ export async function uploadSubmissionFile(courseId: number, assignmentId: numbe
 
     const result = await response.json();
     return result.id;
+}
+
+function getFilePath(file: vscode.Uri): string {
+    if (!file) {
+        return '';
+    }
+
+    if (typeof file.fsPath === 'string' && file.fsPath.length > 0) {
+        return file.fsPath;
+    }
+
+    if (typeof file.path === 'string' && file.path.length > 0) {
+        return file.path;
+    }
+
+    return '';
 }

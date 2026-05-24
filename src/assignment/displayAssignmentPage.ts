@@ -116,6 +116,10 @@ function getWebviewContent(
     const submitTypeText = assignment.submissionTypes?.length
         ? assignment.submissionTypes.join(' · ')
         : '제출 방식 없음';
+    const isTypeFileUpload = assignment.submissionTypes?.some(submissionType =>
+        submissionType === 'online_upload' || submissionType === 'media_recording'
+    ) ?? false;
+    const isTypeNone = assignment.submissionTypes?.length === 0 || assignment.submissionTypes?.includes('none');
     const workflowStateText = assignment.formatWorkflowState(assignment.workflow_state);
     const workflowStateColor = assignment.getWorkflowStateColorId().replace(/\./g, '-');
     const workflowStateColorFallback = assignment.getWorkflowStateColorHex(vscode.window.activeColorTheme.kind);
@@ -160,6 +164,7 @@ function getWebviewContent(
                     </div>
                 </section>
 
+                ${isTypeFileUpload ? `
                 <section class="uploaded-files">
                     <div class="uploaded-title">
                         <span class="uploaded-heading">업로드된 파일</span>
@@ -177,11 +182,14 @@ function getWebviewContent(
                         </ul>
                     </div>
                 </section>
+                ` : ''}
 
+                ${!isTypeNone ? `
                 <form class="submit-card" action="/submit" method="post">
                     <p>제출 전 과제 요건과 첨부 파일을 다시 확인하세요.</p>
                     <button class="submit-btn" type="submit">과제 제출하기</button>
                 </form>
+                ` : ''}
             </div>
             <script src="${scriptUri}"></script>
         </body>

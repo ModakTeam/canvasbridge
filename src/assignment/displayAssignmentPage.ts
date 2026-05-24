@@ -3,10 +3,10 @@ import { Assignment } from './assignment';
 import { uploadSubmissionFile } from './uploadSubmissionFile';
 import { submitAssignment } from './submitAssignment';
 
-export async function displayAssignmentPage(assignment: Assignment, extensionUri: vscode.Uri) {
+export async function displayAssignmentPage(assignment: Assignment, context: vscode.ExtensionContext) {
     const configuredTheme = vscode.workspace.getConfiguration('canvasbridge').get<string>('assignmentPageTheme') || 'light';
     const theme = configuredTheme === 'dark' ? 'dark' : 'light';
-    const resourceRoot = vscode.Uri.joinPath(extensionUri, 'resources');
+    const resourceRoot = vscode.Uri.joinPath(context.extensionUri, 'resources');
 
     const panel = vscode.window.createWebviewPanel(
         'assignmentPage',
@@ -20,7 +20,7 @@ export async function displayAssignmentPage(assignment: Assignment, extensionUri
 
     const styleUri = panel.webview.asWebviewUri(vscode.Uri.joinPath(resourceRoot, 'assignmentPage.css'));
     const scriptUri = panel.webview.asWebviewUri(vscode.Uri.joinPath(resourceRoot, 'assignmentPage.js'));
-    const initialFilesJson = JSON.stringify(assignment.submissions).replace(/</g, '\\u003c');
+    const initialFilesJson = JSON.stringify(context.globalState.get<vscode.Uri[]>(`submissions_${assignment.assignmentId}`) || []).replace(/</g, '\\u003c');
     
     panel.webview.html = getWebviewContent(assignment, theme, styleUri, scriptUri, initialFilesJson);
 
@@ -36,13 +36,14 @@ export async function displayAssignmentPage(assignment: Assignment, extensionUri
 
             if (files && files.length > 0) {
                 for (const file of files) {
-                    if (!assignment.submissions.some(uri => uri.fsPath === file.fsPath)) {
-                        assignment.submissions.push(file);
+                    if (!context.globalState.get<vscode.Uri[]>(`submissions_${assignment.assignmentId}`)?.some(uri => uri.fsPath === file.fsPath)) {
+                        const existingFiles = context.globalState.get<vscode.Uri[]>(`submissions_${assignment.assignmentId}`) || [];
+                        context.globalState.update(`submissions_${assignment.assignmentId}`, [...existingFiles, file]);
                     }
                 }
                 panel.webview.postMessage({
                     command: 'filesUploaded',
-                    files: assignment.submissions
+                    files: context.globalState.get<vscode.Uri[]>(`submissions_${assignment.assignmentId}`) || []
                 });
             }
         } else if (message.command === 'removeUploadedFile') {
@@ -51,18 +52,16 @@ export async function displayAssignmentPage(assignment: Assignment, extensionUri
                 return;
             }
 
-            const updatedSubmissions = assignment.submissions.filter(uri => {
+            const updatedSubmissions = context.globalState.get<vscode.Uri[]>(`submissions_${assignment.assignmentId}`)?.filter(uri => {
                 const uriPath = typeof uri.path === 'string' ? uri.path : '';
                 return uri.fsPath !== fileKey && uriPath !== fileKey;
             });
 
-            if (updatedSubmissions.length !== assignment.submissions.length) {
-                assignment.submissions = updatedSubmissions;
-                panel.webview.postMessage({
-                    command: 'filesUploaded',
-                    files: assignment.submissions
-                });
-            }
+            context.globalState.update(`submissions_${assignment.assignmentId}`, updatedSubmissions || []);
+            panel.webview.postMessage({
+                command: 'filesUploaded',
+                files: updatedSubmissions || []
+            });
         } else if (message.command === 'submit') {
             const uploadFileIds: number[] = [];
 
@@ -73,7 +72,7 @@ export async function displayAssignmentPage(assignment: Assignment, extensionUri
                 ignoreFocusOut: true
             });
 
-            for (const fileUri of assignment.submissions) {
+            for (const fileUri of context.globalState.get<vscode.Uri[]>(`submissions_${assignment.assignmentId}`) || []) {
                 try {
                     const fileId = await uploadSubmissionFile(assignment.courseId, assignment.assignmentId, fileUri);
                     uploadFileIds.push(fileId);
@@ -90,6 +89,11 @@ export async function displayAssignmentPage(assignment: Assignment, extensionUri
                 return;
             }
 		    vscode.window.showInformationMessage(`제출되었습니다!`, { modal: true });
+            context.globalState.update(`submissions_${assignment.assignmentId}`, []);
+            panel.webview.postMessage({
+                command: 'filesUploaded',
+                files: []
+            });
         }
     });
 }

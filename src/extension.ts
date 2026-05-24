@@ -1,17 +1,14 @@
 import * as vscode from 'vscode';
 import { Course, CoursesProvider } from './course/course';
 import { Assignment, AssignmentsProvider } from './assignment/assignment';
-import { getCourseList } from './course/getCourseList';
-import { getAssignmentList } from './assignment/getAssignmentList';
 import { displayAssignmentPage } from './assignment/displayAssignmentPage';
 
 export async function activate(context: vscode.ExtensionContext) {
-	let courses: any = await getCourseList();
-
-	const coursesProvider = new CoursesProvider(courses);
+	const coursesProvider = new CoursesProvider([]);
 	vscode.window.createTreeView('course', {
 		treeDataProvider: coursesProvider
 	});
+	coursesProvider.refresh();
 
 	const assignmentsProvider = new AssignmentsProvider([]);
 	vscode.window.createTreeView('assignment', {
@@ -19,17 +16,15 @@ export async function activate(context: vscode.ExtensionContext) {
 	});
 
 	vscode.commands.registerCommand('course.refreshEntry', async () => {
-		courses = await getCourseList();
-		coursesProvider.refresh(courses);
+		coursesProvider.refresh();
 	});
 
 	vscode.commands.registerCommand('course.listAssignment', async (course: Course) => {
-		const assignments = await getAssignmentList(course.courseId);
-		assignmentsProvider.refresh(assignments);
+		assignmentsProvider.refresh(course.courseId);
 	});
 
 	vscode.commands.registerCommand('assignment.displayAssignmentPage', async (assignment: Assignment) => {
-		displayAssignmentPage(assignment, context.extensionUri);
+		displayAssignmentPage(assignment, context);
 	});
 }
 

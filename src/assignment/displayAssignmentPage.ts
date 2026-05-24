@@ -62,6 +62,12 @@ export async function displayAssignmentPage(assignment: Assignment, context: vsc
                 command: 'filesUploaded',
                 files: updatedSubmissions || []
             });
+        } else if (message.command === 'clearUploadedFiles') {
+            context.globalState.update(`submissions_${assignment.assignmentId}`, []);
+            panel.webview.postMessage({
+                command: 'filesUploaded',
+                files: []
+            });
         } else if (message.command === 'submit') {
             const uploadFileIds: number[] = [];
 
@@ -156,10 +162,13 @@ function getWebviewContent(
 
                 <section class="uploaded-files">
                     <div class="uploaded-title">
-                        업로드된 파일
-                        <form id="fileUploadForm" class="inline-form" action="/upload" method="post">
-                            <button class="upload-btn" id="uploadFilesButton" type="button">파일 업로드</button>
-                        </form>
+                        <span class="uploaded-heading">업로드된 파일</span>
+                        <div class="upload-actions">
+                            <form id="fileUploadForm" class="inline-form" action="/upload" method="post">
+                                <button class="upload-btn" id="uploadFilesButton" type="button">파일 업로드</button>
+                            </form>
+                            <button class="clear-btn" id="clearFilesButton" type="button">전체 삭제</button>
+                        </div>
                     </div>
                     <div class="upload-block">
                         <p class="upload-help">파일을 선택하면 아래 목록에 표시됩니다. 같은 파일은 한 번만 추가됩니다.</p>

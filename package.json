@@ -2,15 +2,15 @@
   "name": "canvasbridge",
   "displayName": "CanvasBridge",
   "description": "CanvasBridge is an extension that allows you to use the features of the Canvas learning management system.",
-  "publisher": "Modak",
+  "publisher": "ModakStudio",
   "version": "0.1.2",
   "icon": "resources/canvasbridge_logo.png",
   "vsce": {
-    "baseImagesUrl": "https://raw.githubusercontent.com/ModakTeam/canvasbridge/main"
+    "baseImagesUrl": "https://raw.githubusercontent.com/ModakStudio/canvasbridge/main"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ModakTeam/canvasbridge.git"
+    "url": "https://github.com/ModakStudio/canvasbridge.git"
   },
   "engines": {
     "vscode": "^1.89.0"

@@ -1,8 +1,8 @@
 {
-  "name": "canvasbridge",
-  "displayName": "CanvasBridge",
+  "name": "canvasbridge-vscode",
+  "displayName": "Canvas Bridge",
   "description": "CanvasBridge is an extension that allows you to use the features of the Canvas learning management system.",
-  "publisher": "ModakStudio",
+  "publisher": "modakstudio",
   "version": "1.0.0",
   "icon": "resources/canvasbridge_logo.png",
   "vsce": {
